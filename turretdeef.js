@@ -60,36 +60,6 @@ class Turret {
     }
 }
 
-// Enemy types
-const enemyTypes = {
-    basic: { value: 50, speed: 1, hp: 75, probability: 1, color: 'red' },
-    heavy: { value: 100, speed: .5, hp: 150, probability: .4, color: 'orange' },
-    quick: { value: 75, speed: 3, hp: 50, probability: .4, color: 'yellow' },
-};
-
-// Enemy class
-class Enemy {
-constructor(x, y, type) {
-        this.x = x;
-        this.y = y;
-        this.type = enemyTypes[type].type;
-        this.hp = enemyTypes[type].hp;
-        this.speed = enemyTypes[type].speed;
-        this.color = enemyTypes[type].color;
-    }
-
-    draw() {
-        ctx.fillStyle = 'red';
-        ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
-        ctx.fillStyle = 'grey';
-        ctx.fillText(this.hp, this.x - 10, this.y - 15);
-    }
-
-    update() {
-        this.x += this.speed;
-    }
-}
-
 // Event listener for placing turrets
 canvas.addEventListener('click', (e) => {
     if (money >= turretTypes[selectedTurretType].cost) {
@@ -134,6 +104,60 @@ canvas.addEventListener('mousemove', (e) => {
     });
 });
 
+// Enemy types
+const enemyTypes = {
+    basic: { value: 50, speed: 1, hp: 75, probability: 1, color: 'red' },
+    heavy: { value: 100, speed: .5, hp: 150, probability: .4, color: 'orange' },
+    quick: { value: 75, speed: 3, hp: 50, probability: .4, color: 'yellow' },
+};
+
+// Function to choose enemy type based on probability
+function chooseEnemyType() {
+    const random = Math.random();
+    let cumulativeProbability = 0;
+
+    for (const type in enemyTypes) {
+        cumulativeProbability += enemyTypes[type].probability;
+        if (random < cumulativeProbability) {
+            return type;
+        }
+    }
+
+    return "basic"; // Fallback to basic type
+}
+
+// Enemy class
+class Enemy {
+    constructor(x, y, type) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.hp = enemyTypes[type].hp;
+        this.speed = enemyTypes[type].speed;
+        this.color = enemyTypes[type].color;
+        this.value = enemyTypes[type].value;
+    }
+
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
+        ctx.fillStyle = 'grey';
+        ctx.fillText(this.hp, this.x - 10, this.y - 15);
+    }
+
+    update() {
+        this.x += this.speed;
+    }
+}
+
+// Spawn enemies at intervals
+setInterval(() => {
+    if (gameRunning) {
+        const type = chooseEnemyType();
+        enemies.push(new Enemy(0, Math.random() * canvas.height, type));
+    }
+}, 2000);
+
 // Main game loop
 function gameLoop() {
     if (!gameRunning) return;
@@ -161,9 +185,9 @@ function gameLoop() {
     // Remove defeated enemies
     for (let i = enemies.length - 1; i >= 0; i--) {
         if (enemies[i].hp <= 0) {
-            enemies.splice(i, 1);
-            score += 10;
-            money += enemyTypes[type].value;
+            money += enemies[i].value; // Reward money
+            score += 10; // Increase score
+            enemies.splice(i, 1); // Remove defeated enemy
         } else if (enemies[i].x > canvas.width) {
             gameRunning = false;
             alert("Game Over! Final Score: " + score);
@@ -174,19 +198,12 @@ function gameLoop() {
     drawUI();
 
     // Display stats
-    ctx.fillStyle = "grey";
+    ctx.fillStyle = "white";
     ctx.fillText(`Score: ${score} | Money: ${money}`, 10, 20);
 
     // Request next frame
     requestAnimationFrame(gameLoop);
 }
-
-// Spawn enemies at intervals
-setInterval(() => {
-    if (gameRunning) {
-        enemies.push(new Enemy(0, Math.random() * canvas.height));
-    }
-}, 2000);
 
 // Start the game
 gameLoop();
