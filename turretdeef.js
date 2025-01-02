@@ -14,9 +14,9 @@ let gameRunning = true;
 
 // Turret types
 const turretTypes = {
-    basic: { cost: 30, range: 150, cooldown: 50, damage: 10, color: 'blue' },
-    sniper: { cost: 75, range: 300, cooldown: 100, damage: 30, color: 'green' },
-    rapid: { cost: 50, range: 80, cooldown: 20, damage: 5, color: 'purple' },
+    basic: { cost: 30, range: 150, cooldown: 50, damage: 15, color: 'blue' },
+    sniper: { cost: 75, range: 300, cooldown: 100, damage: 40, color: 'green' },
+    rapid: { cost: 50, range: 80, cooldown: 20, damage: 10, color: 'purple' },
 };
 
 // Turret class
@@ -62,9 +62,9 @@ class Turret {
 
 // Enemy types
 const enemyTypes = {
-    basic: { value: 50, speed: 1, hp: 75, damage: 10, color: 'red' },
-    heavy: { value: 100, speed: .5, hp: 150, damage: 30, color: 'orange' },
-    quick: { value: 75, speed: 3, hp: 50, damage: 5, color: 'yellow' },
+    basic: { value: 50, speed: 1, hp: 75, probability: 1, color: 'red' },
+    heavy: { value: 100, speed: .5, hp: 150, probability: .4, color: 'orange' },
+    quick: { value: 75, speed: 3, hp: 50, probability: .4, color: 'yellow' },
 };
 
 // Enemy class
