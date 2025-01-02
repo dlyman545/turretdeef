@@ -16,7 +16,7 @@ let gameRunning = true;
 const turretTypes = {
     basic: { cost: 50, range: 100, cooldown: 50, damage: 10, color: 'blue' },
     sniper: { cost: 100, range: 200, cooldown: 100, damage: 30, color: 'green' },
-    rapid: { cost: 75, range: 80, cooldown: 20, damage: 5, color: 'yellow' },
+    rapid: { cost: 75, range: 80, cooldown: 20, damage: 5, color: 'purple' },
 };
 
 // Turret class
@@ -26,7 +26,7 @@ class Turret {
         this.y = y;
         this.type = type;
         this.range = turretTypes[type].range;
-        this.cooldown = 0;
+        this.cooldown = turretTypes[type].cooldown;
         this.damage = turretTypes[type].damage;
         this.color = turretTypes[type].color;
     }
@@ -60,13 +60,22 @@ class Turret {
     }
 }
 
+// Enemy types
+const enemyTypes = {
+    basic: { value: 50, speed: 1, hp: 75, damage: 10, color: 'red' },
+    heavy: { value: 100, speed: .5, hp: 150, damage: 30, color: 'orange' },
+    quick: { value: 75, speed: 3, hp: 50, damage: 5, color: 'yellow' },
+};
+
 // Enemy class
 class Enemy {
-    constructor(x, y) {
+constructor(x, y, type) {
         this.x = x;
         this.y = y;
-        this.hp = 100;
-        this.speed = 1;
+        this.type = enemyTypes[type].type;
+        this.hp = enemyTypes[type].hp;
+        this.speed = enemyTypes[type].speed;
+        this.color = enemyTypes[type].color;
     }
 
     draw() {
@@ -154,7 +163,7 @@ function gameLoop() {
         if (enemies[i].hp <= 0) {
             enemies.splice(i, 1);
             score += 10;
-            money += 20;
+            money += enemyTypes[type].value;
         } else if (enemies[i].x > canvas.width) {
             gameRunning = false;
             alert("Game Over! Final Score: " + score);
