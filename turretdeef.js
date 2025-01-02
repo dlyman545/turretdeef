@@ -11,56 +11,62 @@ let money = 100;
 let score = 0;
 let gameRunning = true;
 
-// Turret class
 class Turret {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.range = 100;
-        this.cooldown = 0;
+        this.range = 100; // Shooting range
+        this.cooldown = 0; // Time until next shot
     }
 
     draw() {
         ctx.fillStyle = 'blue';
         ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
+        // Draw range (optional for visualization)
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.range, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0, 0, 255, 0.2)';
+        ctx.stroke();
     }
 
     shoot(enemy) {
         if (this.cooldown <= 0 && this.inRange(enemy)) {
-            this.cooldown = 50;
-            enemy.hp -= 10;
+            this.cooldown = 50; // Reset cooldown (e.g., 50 frames)
+            enemy.hp -= 10; // Damage enemy
         }
     }
 
     inRange(enemy) {
         const dx = this.x - enemy.x;
         const dy = this.y - enemy.y;
-        return Math.sqrt(dx * dx + dy * dy) <= this.range;
+        return Math.sqrt(dx * dx + dy * dy) <= this.range; // Pythagoras
     }
 
     update() {
         if (this.cooldown > 0) {
-            this.cooldown--;
+            this.cooldown--; // Reduce cooldown over time
         }
     }
 }
 
-// Enemy class
 class Enemy {
     constructor(x, y) {
         this.x = x;
         this.y = y;
         this.hp = 100;
-        this.speed = 1;
+        this.speed = 1; // Moves horizontally
     }
 
     draw() {
-        ctx.fillStyle = this.hp > 0 ? 'red' : 'gray';
+        ctx.fillStyle = 'red';
         ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
+        // Draw HP
+        ctx.fillStyle = 'white';
+        ctx.fillText(this.hp, this.x - 10, this.y - 15);
     }
 
     update() {
-        this.x += this.speed;
+        this.x += this.speed; // Move enemy forward
     }
 }
 
@@ -75,7 +81,6 @@ canvas.addEventListener('click', (e) => {
     }
 });
 
-// Main game loop
 function gameLoop() {
     if (!gameRunning) return;
 
@@ -93,16 +98,18 @@ function gameLoop() {
         turret.draw();
 
         for (let enemy of enemies) {
-            turret.shoot(enemy);
+            if (enemy.hp > 0) {
+                turret.shoot(enemy); // Attack enemies
+            }
         }
     }
 
     // Remove defeated enemies
     for (let i = enemies.length - 1; i >= 0; i--) {
         if (enemies[i].hp <= 0) {
-            enemies.splice(i, 1);
-            score += 10;
-            money += 20;
+            enemies.splice(i, 1); // Remove dead enemy
+            score += 10; // Increase score
+            money += 20; // Reward money
         } else if (enemies[i].x > canvas.width) {
             gameRunning = false;
             alert("Game Over! Final Score: " + score);
