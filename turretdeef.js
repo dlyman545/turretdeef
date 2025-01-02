@@ -1,114 +1,11 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+// Set font for canvas text
+ctx.font = "16px Arial";
 
-canvas.width = 800;
-canvas.height = 600;
-
-// Game state
-const turrets = [];
-const enemies = [];
-let money = 100;
-let score = 0;
-let selectedTurretType = "basic";
-let gameRunning = true;
-
-// Turret types
-const turretTypes = {
-    basic: { cost: 30, range: 150, cooldown: 50, damage: 15, color: 'blue' },
-    sniper: { cost: 75, range: 300, cooldown: 100, damage: 40, color: 'green' },
-    rapid: { cost: 50, range: 80, cooldown: 20, damage: 10, color: 'purple' },
-};
-
-// Turret class
-class Turret {
-    constructor(x, y, type) {
-        this.x = x;
-        this.y = y;
-        this.type = type;
-        this.range = turretTypes[type].range;
-        this.cooldown = turretTypes[type].cooldown;
-        this.damage = turretTypes[type].damage;
-        this.color = turretTypes[type].color;
-    }
-
-    draw() {
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.range, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(0, 0, 255, 0.2)';
-        ctx.stroke();
-    }
-
-    shoot(enemy) {
-        if (this.cooldown <= 0 && this.inRange(enemy)) {
-            this.cooldown = turretTypes[this.type].cooldown;
-            enemy.hp -= this.damage;
-        }
-    }
-
-    inRange(enemy) {
-        const dx = this.x - enemy.x;
-        const dy = this.y - enemy.y;
-        return Math.sqrt(dx * dx + dy * dy) <= this.range;
-    }
-
-    update() {
-        if (this.cooldown > 0) {
-            this.cooldown--;
-        }
-    }
-}
-
-// Event listener for placing turrets
-canvas.addEventListener('click', (e) => {
-    if (money >= turretTypes[selectedTurretType].cost) {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        turrets.push(new Turret(x, y, selectedTurretType));
-        money -= turretTypes[selectedTurretType].cost;
-    }
-});
-
-// UI for turret selection
-function drawUI() {
-    const turretNames = Object.keys(turretTypes);
-    ctx.fillStyle = "grey";
-    ctx.fillText("Select a turret:", 10, 50);
-
-    turretNames.forEach((type, index) => {
-        const turret = turretTypes[type];
-        ctx.fillStyle = turret.color;
-        ctx.fillRect(10, 60 + index * 40, 20, 20);
-        ctx.fillStyle = "grey";
-        ctx.fillText(
-            `${type} (${turret.cost}$)`,
-            40,
-            75 + index * 40
-        );
-    });
-}
-
-// Select turret type based on mouse position over UI
-canvas.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const turretNames = Object.keys(turretTypes);
-    turretNames.forEach((type, index) => {
-        if (x >= 10 && x <= 30 && y >= 60 + index * 40 && y <= 80 + index * 40) {
-            selectedTurretType = type;
-        }
-    });
-});
-
-// Enemy types
+// Normalize probabilities
 const enemyTypes = {
-    basic: { value: 50, speed: 1, hp: 75, probability: 1, color: 'red' },
-    heavy: { value: 100, speed: .5, hp: 150, probability: .4, color: 'orange' },
-    quick: { value: 75, speed: 3, hp: 50, probability: .4, color: 'yellow' },
+    basic: { value: 50, speed: 1, hp: 75, probability: 0.5, color: 'red' },
+    heavy: { value: 100, speed: 0.5, hp: 150, probability: 0.3, color: 'orange' },
+    quick: { value: 75, speed: 3, hp: 50, probability: 0.2, color: 'yellow' },
 };
 
 // Function to choose enemy type based on probability
@@ -141,7 +38,7 @@ class Enemy {
     draw() {
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
-        ctx.fillStyle = 'grey';
+        ctx.fillStyle = 'white';
         ctx.fillText(this.hp, this.x - 10, this.y - 15);
     }
 
@@ -154,7 +51,9 @@ class Enemy {
 setInterval(() => {
     if (gameRunning) {
         const type = chooseEnemyType();
-        enemies.push(new Enemy(0, Math.random() * canvas.height, type));
+        const enemy = new Enemy(0, Math.random() * canvas.height, type);
+        enemies.push(enemy);
+        console.log(`Spawned: ${type}`); // Debug enemy spawning
     }
 }, 2000);
 
