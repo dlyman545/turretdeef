@@ -1,4 +1,4 @@
-document.getElementById('gameCanvas');
+const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 canvas.width = 800;
@@ -60,50 +60,6 @@ class Turret {
     }
 }
 
-// Event listener for placing turrets
-canvas.addEventListener('click', (e) => {
-    if (money >= turretTypes[selectedTurretType].cost) {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        turrets.push(new Turret(x, y, selectedTurretType));
-        money -= turretTypes[selectedTurretType].cost;
-    }
-});
-
-// UI for turret selection
-function drawUI() {
-    const turretNames = Object.keys(turretTypes);
-    ctx.fillStyle = "grey";
-    ctx.fillText("Select a turret:", 10, 50);
-
-    turretNames.forEach((type, index) => {
-        const turret = turretTypes[type];
-        ctx.fillStyle = turret.color;
-        ctx.fillRect(10, 60 + index * 40, 20, 20);
-        ctx.fillStyle = "grey";
-        ctx.fillText(
-            ${type} (${turret.cost}$),
-            40,
-            75 + index * 40
-        );
-    });
-}
-
-// Select turret type based on mouse position over UI
-canvas.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const turretNames = Object.keys(turretTypes);
-    turretNames.forEach((type, index) => {
-        if (x >= 10 && x <= 30 && y >= 60 + index * 40 && y <= 80 + index * 40) {
-            selectedTurretType = type;
-        }
-    });
-});
-
 // Enemy types
 const enemyTypes = {
     basic: { value: 50, speed: 1, hp: 75, probability: 0.5, color: 'red' },
@@ -141,13 +97,39 @@ class Enemy {
     draw() {
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
-        ctx.fillStyle = 'grey';
+        ctx.fillStyle = 'white';
         ctx.fillText(this.hp, this.x - 10, this.y - 15);
     }
 
     update() {
         this.x += this.speed;
     }
+}
+
+// Event listener for placing turrets
+canvas.addEventListener('click', (e) => {
+    if (money >= turretTypes[selectedTurretType].cost) {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        turrets.push(new Turret(x, y, selectedTurretType));
+        money -= turretTypes[selectedTurretType].cost;
+    }
+});
+
+// UI for turret selection
+function drawUI() {
+    const turretNames = Object.keys(turretTypes);
+    ctx.fillStyle = "white";
+    ctx.fillText("Select a turret:", 10, 50);
+
+    turretNames.forEach((type, index) => {
+        const turret = turretTypes[type];
+        ctx.fillStyle = turret.color;
+        ctx.fillRect(10, 60 + index * 40, 20, 20);
+        ctx.fillStyle = "white";
+        ctx.fillText(`${type} (${turret.cost}$)`, 40, 75 + index * 40);
+    });
 }
 
 // Spawn enemies at intervals
@@ -159,7 +141,7 @@ setInterval(() => {
         console.log(`Spawned: ${type}`); // Debug enemy spawning
     }
 }, 2000);
-    
+
 // Main game loop
 function gameLoop() {
     if (!gameRunning) return;
@@ -171,7 +153,7 @@ function gameLoop() {
         enemy.update();
         enemy.draw();
     }
-    
+
     // Draw and update turrets
     for (let turret of turrets) {
         turret.update();
@@ -187,12 +169,12 @@ function gameLoop() {
     // Remove defeated enemies
     for (let i = enemies.length - 1; i >= 0; i--) {
         if (enemies[i].hp <= 0) {
-            money += enemies[i].value; // Reward money
-            score += 10; // Increase score
-            enemies.splice(i, 1); // Remove defeated enemy
+            money += enemies[i].value;
+            score += 10;
+            enemies.splice(i, 1);
         } else if (enemies[i].x > canvas.width) {
             gameRunning = false;
-            alert("Game Over! Final Score: " + score);
+            alert(`Game Over! Final Score: ${score}`);
         }
     }
 
@@ -200,8 +182,8 @@ function gameLoop() {
     drawUI();
 
     // Display stats
-    ctx.fillStyle = "grey";
-    ctx.fillText(Score: ${score} | Money: ${money}, 10, 20);
+    ctx.fillStyle = "white";
+    ctx.fillText(`Score: ${score} | Money: ${money}`, 10, 20);
 
     // Request next frame
     requestAnimationFrame(gameLoop);
