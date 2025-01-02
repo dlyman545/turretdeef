@@ -24,7 +24,7 @@ class Turret {
         ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
         // Draw range (optional for visualization)
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.range, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, this.range, 5, Math.PI * 2);
         ctx.strokeStyle = 'rgba(0, 0, 255, 0.2)';
         ctx.stroke();
     }
@@ -61,7 +61,7 @@ class Enemy {
         ctx.fillStyle = 'red';
         ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
         // Draw HP
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = 'orange';
         ctx.fillText(this.hp, this.x - 10, this.y - 15);
     }
 
@@ -117,7 +117,7 @@ function gameLoop() {
     }
 
     // Display stats
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "grey";
     ctx.fillText(`Score: ${score} | Money: ${money}`, 10, 20);
 
     // Request next frame
