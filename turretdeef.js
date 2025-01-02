@@ -14,8 +14,8 @@ let gameRunning = true;
 
 // Turret types
 const turretTypes = {
-    basic: { cost: 30, range: 100, cooldown: 50, damage: 10, color: 'blue' },
-    sniper: { cost: 75, range: 200, cooldown: 100, damage: 30, color: 'green' },
+    basic: { cost: 30, range: 150, cooldown: 50, damage: 10, color: 'blue' },
+    sniper: { cost: 75, range: 300, cooldown: 100, damage: 30, color: 'green' },
     rapid: { cost: 50, range: 80, cooldown: 20, damage: 5, color: 'purple' },
 };
 
