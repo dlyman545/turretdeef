@@ -101,7 +101,7 @@ class Enemy {
     draw() {
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = 'grey';
         ctx.fillText(this.hp, this.x - 10, this.y - 15);
     }
 
@@ -124,14 +124,14 @@ canvas.addEventListener('click', (e) => {
 // UI for turret selection
 function drawUI() {
     const turretNames = Object.keys(turretTypes);
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "grey";
     ctx.fillText("Select a turret:", 10, 50);
 
     turretNames.forEach((type, index) => {
         const turret = turretTypes[type];
         ctx.fillStyle = turret.color;
         ctx.fillRect(10, 60 + index * 40, 20, 20);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "grey";
         ctx.fillText(`${type} (${turret.cost}$)`, 40, 75 + index * 40);
     });
 }
@@ -186,7 +186,7 @@ function gameLoop() {
     drawUI();
 
     // Display stats
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "grey";
     ctx.fillText(`Score: ${score} | Money: ${money}`, 10, 20);
 
     // Request next frame
