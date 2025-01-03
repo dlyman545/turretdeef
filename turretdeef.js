@@ -14,6 +14,7 @@ const enemies = [];
 let money = 100;
 let score = 0;
 let selectedTurretType = "basic";
+let spawnInterval = 2000;
 let gameRunning = true;
 
 // Turret types
@@ -158,7 +159,7 @@ setInterval(() => {
         enemies.push(enemy);
         console.log(`Spawned: ${type}`); // Debug enemy spawning
     }
-}, 2000);
+}, spawnInterval);
 
 // Main game loop
 function gameLoop() {
