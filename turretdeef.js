@@ -136,6 +136,20 @@ function drawUI() {
     });
 }
 
+// Select turret type based on mouse position over UI
+canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const turretNames = Object.keys(turretTypes);
+    turretNames.forEach((type, index) => {
+        if (x >= 10 && x <= 30 && y >= 60 + index * 40 && y <= 80 + index * 40) {
+            selectedTurretType = type;
+        }
+    });
+});
+
 // Spawn enemies at intervals
 setInterval(() => {
     if (gameRunning) {
