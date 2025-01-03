@@ -4,6 +4,10 @@ const ctx = canvas.getContext('2d');
 canvas.width = 800;
 canvas.height = 600;
 
+// Fill the canvas with a black background
+ctx.fillStyle = "black";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
 // Game state
 const turrets = [];
 const enemies = [];
